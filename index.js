@@ -1,48 +1,14 @@
 
-/**
- * Lists available voices for the specified language.
- *
- * @param {string} languageCode - The language code.
- */
-async function listVoices(languageCode) {
-  const textToSpeech = require('@google-cloud/text-to-speech');
+const {listVoices, synthesize} = require("./utils/tts")
 
-  const client = new textToSpeech.TextToSpeechClient();
-
-  const [result] = await client.listVoices({languageCode});
-  const voices = result.voices;
-
-  voices.forEach((voice) => {
-    console.log(`${voice.name} (${voice.ssmlGender}): ${voice.languageCodes}`);
-  });
-}
+// tts
+// listVoices()
+// synthesize('This is a demonstration of the Google Cloud Text-to-Speech API')
 
 
-/**
- * Sythesizes sample text into an .mp3 file.
- */
-async function synthesize(text) {
-  const textToSpeech = require('@google-cloud/text-to-speech');
-  const fs = require('fs');
-  const util = require('util');
+// stt
 
-  const client = new textToSpeech.TextToSpeechClient();
+const {speechToTextFromLocalFile, speechToTextFromGGStorage} = require("./utils/stt")
 
-  const request = {
-    input: {text: text},
-    voice: {languageCode: 'en-US', ssmlGender: 'NEUTRAL'},
-    audioConfig: {audioEncoding: 'MP3'},
-  };
-
-  const [response] = await client.synthesizeSpeech(request);
-  // Write the binary audio content to a local file
-  const writeFile = util.promisify(fs.writeFile);
-  await writeFile(`./outputs/output_${Date.now()}.mp3`, response.audioContent, 'binary');
-  console.log('Audio content written to file: output.mp3');
-}
-
-const {edge_tts : edgeTTS} = require("./utils/edge_tts")
-
-listVoices()
-synthesize('This is a demonstration of the Google Cloud Text-to-Speech API')
-edgeTTS("From edge api with love.")
+speechToTextFromGGStorage("gs://cloud-samples-data/speech/brooklyn_bridge.raw")
+speechToTextFromLocalFile("./outputs/output.mp3")
