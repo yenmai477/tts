@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env google_application_credentials=./key.json 'node index'",
+    "py-install": "pip install -r requirements.txt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
